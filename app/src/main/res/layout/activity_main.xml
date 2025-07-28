@@ -59,6 +59,7 @@
         android:layout_width="273dp"
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
+        android:autofillHints=""
         android:hint="@string/enter_weight"
         android:inputType="number|numberDecimal"
         android:padding="8dp"
@@ -82,6 +83,7 @@
         android:layout_width="273dp"
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
+        android:autofillHints=""
         android:hint="@string/enter_reps"
         android:inputType="number"
         android:padding="8dp"
@@ -99,6 +101,5 @@
         android:text="@string/log"
         android:textSize="36sp"
         />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
