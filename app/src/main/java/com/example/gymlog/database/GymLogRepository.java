@@ -2,11 +2,9 @@ package com.example.gymlog.database;
 
 import android.app.Application;
 import android.util.Log;
-
 import com.example.gymlog.database.entities.GymLog;
 import com.example.gymlog.MainActivity;
 import com.example.gymlog.database.entities.User;
-
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;

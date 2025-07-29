@@ -1,20 +1,21 @@
 package com.example.gymlog;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Insert;
 
 import com.example.gymlog.database.GymLogRepository;
 import com.example.gymlog.database.entities.GymLog;
 import com.example.gymlog.databinding.ActivityMainBinding;
-
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-
+    private static final String MAIN_ACTIVITY_USER_ID = "com.example.gymlog.MAIN_ACTIVITY_USER_ID";
     private ActivityMainBinding binding;
     private GymLogRepository repository;
     public static final String TAG = "GYMLOG";
@@ -29,6 +30,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = com.example.gymlog.databinding.ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        loginUser();
+
+        if(loggedInUserID == -1) {
+            Intent intent = LoginActivity.loginIntentFactory(getApplicationContext());
+            startActivity(intent);
+        }
 
         repository = GymLogRepository.getRepository(getApplication());
 
@@ -49,6 +57,17 @@ public class MainActivity extends AppCompatActivity {
                 updateDisplay();
             }
         });
+    }
+
+    private void loginUser() {
+        //TODO: create login method
+        loggedInUserID = getIntent().getIntExtra(MAIN_ACTIVITY_USER_ID, -1);
+    }
+
+    static Intent mainActivityIntentFactory(Context context, int userID) {
+        Intent intent = new Intent(context,MainActivity.class);
+        intent.putExtra(MAIN_ACTIVITY_USER_ID,userID);
+        return intent;
     }
 
     private void insertGymlogRecord() {
