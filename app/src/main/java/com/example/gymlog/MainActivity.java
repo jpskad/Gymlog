@@ -4,16 +4,15 @@ import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
-
 import androidx.appcompat.app.AppCompatActivity;
-
+import com.example.gymlog.databinding.ActivityMainBinding;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    com.example.gymlog.databinding.ActivityMainBinding binding;
+    ActivityMainBinding binding;
 
-    private static final String TAG = "GYMLOG";
+    public static final String TAG = "GYMLOG";
     String mExercise = "";
     double mWeight = 0.0;
     int mReps = 0;

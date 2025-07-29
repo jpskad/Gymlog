@@ -36,6 +36,7 @@
         android:layout_width="273dp"
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
+        android:autofillHints=""
         android:hint="@string/enter_an_exercise"
         android:inputType="textAutoComplete"
         android:padding="8dp"
