@@ -2,6 +2,9 @@ package com.example.gymlog.database;
 
 import android.app.Application;
 import android.util.Log;
+
+import androidx.lifecycle.LiveData;
+
 import com.example.gymlog.database.entities.GymLog;
 import com.example.gymlog.MainActivity;
 import com.example.gymlog.database.entities.User;
@@ -13,7 +16,6 @@ import java.util.concurrent.Future;
 public class GymLogRepository {
     private final GymLogDAO gymLogDAO;
     private final UserDAO userDAO;
-
     private ArrayList<GymLog> allLogs;
     private static GymLogRepository repository;
 
@@ -39,7 +41,7 @@ public class GymLogRepository {
         try {
             return future.get();
         } catch (InterruptedException | ExecutionException e) {
-            Log.d(MainActivity.TAG,"Problem getting GymLogRepository, thread error.");
+            Log.d(MainActivity.TAG, "Problem getting GymLogRepository, thread error.");
         }
         return null;
     }
@@ -62,32 +64,24 @@ public class GymLogRepository {
     }
 
     public void insertGymLog(GymLog gymLog) {
-        GymLogDatabase.databaseWriteExecutor.execute(()->
-                {
-                    gymLogDAO.insert(gymLog);
-                });
+        GymLogDatabase.databaseWriteExecutor.execute(() ->
+        {
+            gymLogDAO.insert(gymLog);
+        });
     }
 
     public void insertUser(User... user) {
-        GymLogDatabase.databaseWriteExecutor.execute(()->
+        GymLogDatabase.databaseWriteExecutor.execute(() ->
         {
             userDAO.insert(user);
         });
     }
 
-    public User getUserByUsername(String username) {
-        Future<User> future = GymLogDatabase.databaseWriteExecutor.submit(
-                new Callable<User>() {
-                    @Override
-                    public User call() throws Exception {
-                        return userDAO.getUserByUserName(username);
-                    }
-                });
-        try {
-            future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            Log.i(MainActivity.TAG, "Problem when getting user by username");
-        }
-        return null;
+    public LiveData<User> getUserByUsername(String username) {
+        return userDAO.getUserByUserName(username);
+    }
+
+    public LiveData<User> getUserByUserID(int userID) {
+        return userDAO.getUserByUserID(userID);
     }
 }
