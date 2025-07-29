@@ -1,5 +1,7 @@
 package com.example.gymlog.database.entities;
 
+import android.annotation.SuppressLint;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -7,18 +9,18 @@ import androidx.room.PrimaryKey;
 import com.example.gymlog.database.GymLogDatabase;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Entity(tableName = GymLogDatabase.GYM_LOG_TABLE)
 public class GymLog {
     @PrimaryKey(autoGenerate = true)
     private int id;
-    private String exercise;
-    private double weight;
-    private int reps;
+    private final String exercise;
+    private final double weight;
+    private final int reps;
     private LocalDateTime date;
-
-    private int userID;
+    private final int userID;
 
     @Override
     public boolean equals(Object o) {
@@ -40,14 +42,18 @@ public class GymLog {
         date = LocalDateTime.now();
     }
 
+    @SuppressLint("DefaultLocale")
     @NonNull
     @Override
     public String toString() {
-        return exercise + '\n' +
-                "weight: " + weight + '\n' +
-                "reps: " + reps + '\n' +
-                "date: " + date.toString() + '\n' +
-                "=-=-=-=-=-=-=\n";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return String.format(
+                "%s\nweight: %.1f | reps: %d\n%s",
+                exercise,
+                weight,
+                reps,
+                date.format(formatter)
+        );
     }
 
     public LocalDateTime getDate() {
@@ -62,10 +68,6 @@ public class GymLog {
         return exercise;
     }
 
-    public void setExercise(String exercise) {
-        this.exercise = exercise;
-    }
-
     public int getId() {
         return id;
     }
@@ -78,23 +80,13 @@ public class GymLog {
         return reps;
     }
 
-    public void setReps(int reps) {
-        this.reps = reps;
-    }
-
     public double getWeight() {
         return weight;
-    }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
     }
 
     public int getUserID() {
         return userID;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
+
 }

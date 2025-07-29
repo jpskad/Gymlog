@@ -11,8 +11,8 @@ import java.util.Objects;
 public class User {
     @PrimaryKey(autoGenerate = true)
     private int id;
-    private String username;
-    private String password;
+    private final String username;
+    private final String password;
     private boolean isAdmin;
 
     public User(String username,String password) {
@@ -54,15 +54,8 @@ public class User {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
 }

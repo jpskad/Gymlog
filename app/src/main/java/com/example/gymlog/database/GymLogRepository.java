@@ -10,21 +10,19 @@ import com.example.gymlog.MainActivity;
 import com.example.gymlog.database.entities.User;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class GymLogRepository {
     private final GymLogDAO gymLogDAO;
     private final UserDAO userDAO;
-    private ArrayList<GymLog> allLogs;
     private static GymLogRepository repository;
 
     private GymLogRepository(Application application) {
         GymLogDatabase db = GymLogDatabase.getDatabase(application);
         this.gymLogDAO = db.gymLogDAO();
         this.userDAO = db.userDAO();
-        this.allLogs = (ArrayList<GymLog>) this.gymLogDAO.getAllRecords();
+        this.gymLogDAO.getAllRecords();
     }
 
     public static GymLogRepository getRepository(Application application) {
@@ -32,12 +30,7 @@ public class GymLogRepository {
             return repository;
         }
         Future<GymLogRepository> future = GymLogDatabase.databaseWriteExecutor.submit(
-                new Callable<GymLogRepository>() {
-                    @Override
-                    public GymLogRepository call() throws Exception {
-                        return new GymLogRepository(application);
-                    }
-                }
+                () -> new GymLogRepository(application)
         );
         try {
             return future.get();
@@ -47,35 +40,13 @@ public class GymLogRepository {
         return null;
     }
 
-    public ArrayList<GymLog> getAllLogs() {
-        Future<ArrayList<GymLog>> future = GymLogDatabase.databaseWriteExecutor.submit(
-                new Callable<ArrayList<GymLog>>() {
-                    @Override
-                    public ArrayList<GymLog> call() throws Exception {
-                        return (ArrayList<GymLog>) gymLogDAO.getAllRecords();
-                    }
-                }
-        );
-        try {
-            return future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            Log.i(MainActivity.TAG, "Problem when getting all GymLogs in the repository");
-        }
-        return null;
+    public static void setRepository(GymLogRepository repository) {
+        GymLogRepository.repository = repository;
     }
 
     public void insertGymLog(GymLog gymLog) {
         GymLogDatabase.databaseWriteExecutor.execute(() ->
-        {
-            gymLogDAO.insert(gymLog);
-        });
-    }
-
-    public void insertUser(User... user) {
-        GymLogDatabase.databaseWriteExecutor.execute(() ->
-        {
-            userDAO.insert(user);
-        });
+                gymLogDAO.insert(gymLog));
     }
 
     public LiveData<User> getUserByUsername(String username) {
@@ -93,12 +64,7 @@ public class GymLogRepository {
     @Deprecated
     public ArrayList<GymLog> getAllLogsByUserID(int loggedInUserID) {
         Future<ArrayList<GymLog>> future = GymLogDatabase.databaseWriteExecutor.submit(
-                new Callable<ArrayList<GymLog>>() {
-                    @Override
-                    public ArrayList<GymLog> call() throws Exception {
-                        return (ArrayList<GymLog>) gymLogDAO.getRecordsByUserID(loggedInUserID);
-                    }
-                }
+                () -> (ArrayList<GymLog>) gymLogDAO.getRecordsByUserID(loggedInUserID)
         );
         try {
             return future.get();

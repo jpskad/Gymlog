@@ -2,9 +2,7 @@ package com.example.gymlog;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,12 +26,7 @@ public class LoginActivity extends AppCompatActivity {
 
         repository = GymLogRepository.getRepository(getApplication());
 
-        binding.loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                verifyUser();
-            }
-        });
+        binding.loginButton.setOnClickListener(v -> verifyUser());
     }
 
     private void verifyUser(){

@@ -1,16 +1,13 @@
 package com.example.gymlog;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -27,17 +24,12 @@ import com.example.gymlog.databinding.ActivityMainBinding;
 import com.example.gymlog.viewHolders.GymLogAdapter;
 import com.example.gymlog.viewHolders.GymLogViewModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity {
     private static final String MAIN_ACTIVITY_USER_ID = "com.example.gymlog.MAIN_ACTIVITY_USER_ID";
-    static final String SHARED_PREFERENCE_USERID_KEY = "com.example.gymlog.SHARED_PREFERENCE_USERID_KEY";
     static final String SAVED_INSTANCE_STATE_USERID_KEY = "com.example.gymlog.SAVED_INSTANCE_STATE_USERID_KEY";
     private static final int LOGGED_OUT = -1;
     private ActivityMainBinding binding;
     private GymLogRepository repository;
-    private GymLogViewModel gymLogViewModel;
     public static final String TAG = "GYMLOG";
     String mExercise = "";
     double mWeight = 0.0;
@@ -51,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         binding = com.example.gymlog.databinding.ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        gymLogViewModel = new ViewModelProvider(this).get(GymLogViewModel.class);
+        GymLogViewModel gymLogViewModel = new ViewModelProvider(this).get(GymLogViewModel.class);
 
 
         RecyclerView recyclerView = binding.logDisplayRecyclerView;
@@ -62,9 +54,7 @@ public class MainActivity extends AppCompatActivity {
         repository = GymLogRepository.getRepository(getApplication());
         loginUser(savedInstanceState);
 
-        gymLogViewModel.getAllLogsByID(loggedInUserID).observe(this,gymLogs -> {
-                adapter.submitList(gymLogs);
-        });
+        gymLogViewModel.getAllLogsByID(loggedInUserID).observe(this, adapter::submitList);
 
         //user is not logged in at this point, go to login screen
         if(loggedInUserID == -1) {
@@ -74,26 +64,10 @@ public class MainActivity extends AppCompatActivity {
 
         updatedSharedPreference();
 
-        //TODO: remove two lines below
-        //binding.logDisplayTextView.setMovementMethod(new ScrollingMovementMethod());
-        //updateDisplay();
-        binding.logButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getInformationFromDisplay();
-                insertGymlogRecord();
-                //TODO: remove line below
-                //updateDisplay();
-            }
+        binding.logButton.setOnClickListener(v -> {
+            getInformationFromDisplay();
+            insertGymlogRecord();
         });
-/* TODO: remove this block
-        binding.exerciseInputEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //updateDisplay();
-            }
-        });
-        */
     }
 
     private void loginUser(Bundle savedInstanceState) {
@@ -142,12 +116,9 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
         item.setTitle(user.getUsername());
-        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(@NonNull MenuItem item) {
-                showLogoutDialog();
-                return false;
-            }
+        item.setOnMenuItemClickListener(item1 -> {
+            showLogoutDialog();
+            return false;
         });
         return true;
     }
@@ -158,19 +129,9 @@ public class MainActivity extends AppCompatActivity {
 
         alertBuilder.setMessage("Logout?");
 
-        alertBuilder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                logout();
-            }
-        });
+        alertBuilder.setPositiveButton("Logout", (dialog, which) -> logout());
 
-        alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                alertDialog.dismiss();
-            }
-        });
+        alertBuilder.setNegativeButton("Cancel", (dialog, which) -> alertDialog.dismiss());
         alertBuilder.create().show();
     }
 
@@ -203,19 +164,6 @@ public class MainActivity extends AppCompatActivity {
         }
         GymLog log = new GymLog(mExercise,mWeight,mReps,loggedInUserID);
         repository.insertGymLog(log);
-    }
-
-    @Deprecated
-    private void updateDisplay(){
-        ArrayList<GymLog> allLogs = repository.getAllLogsByUserID(loggedInUserID);
-        if(allLogs.isEmpty()){
-//          binding.logDisplayTextView.setText(R.string.nothing_to_show_time_to_hit_the_gym);
-        }
-        StringBuilder sb = new StringBuilder();
-        for(GymLog log : allLogs) {
-            sb.append(log);
-        }
-//        binding.logDisplayTextView.setText(sb.toString());
     }
 
     private void getInformationFromDisplay() {

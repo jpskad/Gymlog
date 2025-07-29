@@ -22,8 +22,4 @@ public class GymLogViewModel extends AndroidViewModel {
     public LiveData<List<GymLog>> getAllLogsByID(int userID) {
         return repository.getAllLogsByUserIDLiveData(userID);
     }
-
-    public void insert(GymLog log) {
-        repository.insertGymLog(log);
-    }
 }
