@@ -55,7 +55,7 @@ public class GymLogRepository {
         );
         try {
             return future.get();
-        }catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             Log.i(MainActivity.TAG, "Problem when getting all GymLogs in the repository");
         }
         return null;
@@ -73,5 +73,21 @@ public class GymLogRepository {
         {
             userDAO.insert(user);
         });
+    }
+
+    public User getUserByUsername(String username) {
+        Future<User> future = GymLogDatabase.databaseWriteExecutor.submit(
+                new Callable<User>() {
+                    @Override
+                    public User call() throws Exception {
+                        return userDAO.getUserByUserName(username);
+                    }
+                });
+        try {
+            future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            Log.i(MainActivity.TAG, "Problem when getting user by username");
+        }
+        return null;
     }
 }
