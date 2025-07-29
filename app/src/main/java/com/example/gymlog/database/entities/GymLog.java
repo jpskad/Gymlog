@@ -1,11 +1,11 @@
-package com.example.gymlog.Database.entities;
+package com.example.gymlog.database.entities;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.example.gymlog.Database.GymLogDatabase;
+import com.example.gymlog.database.GymLogDatabase;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity(tableName = GymLogDatabase.GYM_LOG_TABLE)
@@ -15,7 +15,7 @@ public class GymLog {
     private String exercise;
     private double weight;
     private int reps;
-    private LocalDate date;
+    private LocalDateTime date;
 
     @Override
     public boolean equals(Object o) {
@@ -29,18 +29,18 @@ public class GymLog {
         return Objects.hash(id, exercise, weight, reps, date);
     }
 
-    public GymLog(String exercise, int reps, double weight) {
+    public GymLog(String exercise, double weight, int reps) {
         this.exercise = exercise;
         this.reps = reps;
         this.weight = weight;
-        date = LocalDate.now();
+        date = LocalDateTime.now();
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

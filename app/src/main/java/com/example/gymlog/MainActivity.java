@@ -5,13 +5,16 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.gymlog.database.GymLogRepository;
+import com.example.gymlog.database.entities.GymLog;
 import com.example.gymlog.databinding.ActivityMainBinding;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    ActivityMainBinding binding;
-
+    private ActivityMainBinding binding;
+    private GymLogRepository repository;
     public static final String TAG = "GYMLOG";
     String mExercise = "";
     double mWeight = 0.0;
@@ -23,15 +26,23 @@ public class MainActivity extends AppCompatActivity {
         binding = com.example.gymlog.databinding.ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        repository = new GymLogRepository(getApplication());
+
         binding.logDisplayTextView.setMovementMethod(new ScrollingMovementMethod());
 
         binding.logButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getInformationFromDisplay();
+                insertGymlogRecord();
                 updateDisplay();
             }
         });
+    }
+
+    private void insertGymlogRecord() {
+        GymLog log = new GymLog(mExercise,mWeight,mReps);
+        repository.insertGymLog(log);
     }
 
     private void updateDisplay(){

@@ -1,25 +1,24 @@
-package com.example.gymlog.Database;
+package com.example.gymlog.database;
 
 import android.app.Application;
 import android.util.Log;
 
-import com.example.gymlog.Database.entities.GymLog;
+import com.example.gymlog.database.entities.GymLog;
 import com.example.gymlog.MainActivity;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class GymLogRepository {
-    private GymLogDAO gymLogDAO;
+    private final GymLogDAO gymLogDAO;
     private ArrayList<GymLog> allLogs;
 
     public GymLogRepository(Application application) {
         GymLogDatabase db = GymLogDatabase.getDatabase(application);
         this.gymLogDAO = db.gymLogDAO();
-        this.allLogs = this.gymLogDAO.getAllRecords();
+        this.allLogs = (ArrayList<GymLog>) this.gymLogDAO.getAllRecords();
     }
 
     public ArrayList<GymLog> getAllLogs() {
@@ -27,7 +26,7 @@ public class GymLogRepository {
                 new Callable<ArrayList<GymLog>>() {
                     @Override
                     public ArrayList<GymLog> call() throws Exception {
-                        return gymLogDAO.getAllRecords();
+                        return (ArrayList<GymLog>) gymLogDAO.getAllRecords();
                     }
                 }
         );
